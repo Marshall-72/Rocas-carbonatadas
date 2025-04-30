@@ -97,7 +97,7 @@ def graficar_categorizacion(titulo, datos, rotar_ejes=False):
     if rotar_ejes:
         plt.xticks(rotation=45, ha="right")
 
-    ax.text(0.5, -0.15, 'Fuente: Cutipa C. Jaramillo A. Quenaya F. Amaro M.', 
+    ax.text(0.5, -0.25, 'Fuente: Cutipa C. Jaramillo A. Quenaya F. Amaro M.', 
             horizontalalignment='center', verticalalignment='center', 
             transform=ax.transAxes, fontsize=8)
     st.pyplot(fig)
@@ -119,7 +119,7 @@ def graficar_energia_ambiente():
     plt.xticks(rotation=45, ha='right')
     
     # Añadir fuente debajo del gráfico
-    ax.text(0.5, -0.15, 'Fuente: Cutipa C. Jaramillo A. Quenaya F. Amaro M.', 
+    ax.text(0.5, -0.25, 'Fuente: Cutipa C. Jaramillo A. Quenaya F. Amaro M.', 
             horizontalalignment='center', verticalalignment='center', 
             transform=ax.transAxes, fontsize=8)
     
@@ -154,11 +154,12 @@ def graficar_regresion_lineal(x_data, y_data, titulo):
 
     st.pyplot(fig)
 
-    # Descripción del gráfico debajo
-    st.markdown(
-        "*Este gráfico muestra la relación entre la energía del ambiente (asignada en un rango de 1 a 10) y la clasificación Dunham de las rocas seleccionadas. "
-        "La línea de regresión sugiere una posible tendencia o correlación entre ambos parámetros.*"
-    )
+    # Descripción y análisis del gráfico de regresión lineal
+    st.markdown("""
+    **Descripción y análisis del gráfico de regresión lineal:**
+
+    > La regresión lineal compara la energía del ambiente con los valores categóricos asignados a los tipos de ambiente de formación. Aunque la relación no es perfectamente lineal, se observa una **tendencia positiva**, lo que indica que ambientes más energéticos (como playas o plataformas someras) tienden a estar asociados a valores más altos en la escala de energía asignada. Esto es coherente con la clasificación ambiental de las rocas seleccionadas.
+    """)
 
 # Función para graficar la regresión entre energía de ambiente y clasificación Dunham
 def regresion_energia_clasificacion_dunham():
