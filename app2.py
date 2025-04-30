@@ -102,19 +102,27 @@ def graficar_categorizacion(titulo, datos, rotar_ejes=False):
             transform=ax.transAxes, fontsize=8)
     st.pyplot(fig)
 
-# Función para graficar la energía del ambiente
+# Función para graficar energía del ambiente
 def graficar_energia_ambiente():
-    x = [energia_ambiente[muestra] for muestra in muestras_seleccionadas]
-    y = [mapear_clasificacion(energia_ambiente)[0].get(ambiente_formacion[muestra], 0) for muestra in muestras_seleccionadas]
+    x = [muestra for muestra in muestras_seleccionadas]
+    y = [energia_ambiente.get(muestra, 0) for muestra in muestras_seleccionadas]
+    
     fig, ax = plt.subplots()
-    ax.scatter(x, y, color='blue')
-    ax.set_xlabel("Energía de Ambiente (1-10)")
-    ax.set_ylabel("Tipo de Ambiente")
-    ax.set_title("Energía del Ambiente de Formación")
+    scatter = ax.scatter(x, y, c=y, cmap='viridis', s=100)
+    ax.set_xlabel("Muestras")
+    ax.set_ylabel("Energía del ambiente (1-10)")
+    ax.set_title("Energía del ambiente de las rocas")
+    fig.colorbar(scatter, ax=ax, label='Energía')
     ax.grid(True, linestyle='--', alpha=0.4)
+    
+    # Rotar las etiquetas del eje X
+    plt.xticks(rotation=45, ha='right')
+    
+    # Añadir fuente debajo del gráfico
     ax.text(0.5, -0.15, 'Fuente: Cutipa C. Jaramillo A. Quenaya F. Amaro M.', 
             horizontalalignment='center', verticalalignment='center', 
             transform=ax.transAxes, fontsize=8)
+    
     st.pyplot(fig)
 
 # Función para graficar regresión lineal con la descripción debajo del gráfico
