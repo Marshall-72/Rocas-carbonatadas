@@ -1,5 +1,7 @@
-import streamlit as st
+import numpy as np
+import scipy.stats as stats
 import matplotlib.pyplot as plt
+import streamlit as st
 
 # Datos de ejemplo (puedes modificarlos según tus muestras reales)
 muestras = [
@@ -46,16 +48,16 @@ ambiente_formacion = {
     "Baritina": "Ambiente hidrotermal"
 }
 
-# Nueva clasificación de energía del ambiente (escala 1-10)
+# Energía de ambiente (con valores numéricos entre 1-10)
 energia_ambiente = {
-    "Caliza de Tacna": 3,   # Baja energía
-    "Caliza de Puno": 3,    # Baja energía
-    "Caliza con fósil": 4,  # Baja energía
-    "Marga de Tacna": 2,    # Baja energía
-    "Halita": 9,            # Alta energía
-    "Yeso": 8,              # Alta energía
-    "Coquina": 7,           # Alta energía
-    "Baritina": 6           # Moderada energía
+    "Caliza de Tacna": 7,
+    "Caliza de Puno": 6,
+    "Caliza con fósil": 5,
+    "Marga de Tacna": 6,
+    "Halita": 9,
+    "Yeso": 9,
+    "Coquina": 4,
+    "Baritina": 8
 }
 
 # Función para obtener los valores únicos y mapear a números para eje Y
@@ -68,20 +70,20 @@ def mapear_clasificacion(diccionario):
     return mapa, categorias
 
 # Función para graficar clasificaciones
-def graficar_categorizacion(titulo, datos, etiquetas=None):
+def graficar_categorizacion(titulo, datos):
     mapa, categorias = mapear_clasificacion(datos)
     x = []
     y = []
     colores = []
-    etiquetas_lista = []
+    etiquetas = []
 
     for i, muestra in enumerate(muestras):
         categoria = datos.get(muestra, "N/A")
-        if categoria != "N/A" and muestra in muestras_seleccionadas:
+        if categoria != "N/A":
             x.append(muestra)
             y.append(mapa[categoria])
             colores.append(i)
-            etiquetas_lista.append(categoria)
+            etiquetas.append(categoria)
 
     fig, ax = plt.subplots()
     ax.scatter(x, y, c=colores, cmap='tab10', s=100)
@@ -90,44 +92,26 @@ def graficar_categorizacion(titulo, datos, etiquetas=None):
     ax.set_xlabel("Muestras")
     ax.set_title(titulo)
     ax.grid(True, axis='y', linestyle='--', alpha=0.4)
-    
-    # Rotar las etiquetas del eje X
-    plt.xticks(rotation=45, ha='right')
-    
-    # Añadir fuente debajo del gráfico
-    ax.text(0.5, -0.25, 'Fuente: Cutipa C. Jaramillo A. Quenaya F. Amaro M.', 
+    ax.text(0.5, -0.15, 'Fuente: Cutipa C. Jaramillo A. Quenaya F. Amaro M.', 
             horizontalalignment='center', verticalalignment='center', 
             transform=ax.transAxes, fontsize=8)
-    
-    if etiquetas:
-        for i, etiqueta in enumerate(etiquetas_lista):
-            ax.annotate(etiqueta, (x[i], y[i]), fontsize=8, ha='center')
-    
     st.pyplot(fig)
 
-# Función para graficar energía del ambiente
+# Función para graficar la energía del ambiente
 def graficar_energia_ambiente():
-    x = [muestra for muestra in muestras_seleccionadas]
-    y = [energia_ambiente.get(muestra, 0) for muestra in muestras_seleccionadas]
-    
+    x = [energia_ambiente[muestra] for muestra in muestras_seleccionadas]
+    y = [mapear_clasificacion(energia_ambiente)[0].get(ambiente_formacion[muestra], 0) for muestra in muestras_seleccionadas]
     fig, ax = plt.subplots()
-    scatter = ax.scatter(x, y, c=y, cmap='viridis', s=100)
-    ax.set_xlabel("Muestras")
-    ax.set_ylabel("Energía del ambiente (1-10)")
-    ax.set_title("Energía del ambiente de las rocas")
-    fig.colorbar(scatter, ax=ax, label='Energía')
+    ax.scatter(x, y, color='blue')
+    ax.set_xlabel("Energía de Ambiente (1-10)")
+    ax.set_ylabel("Tipo de Ambiente")
+    ax.set_title("Energía del Ambiente de Formación")
     ax.grid(True, linestyle='--', alpha=0.4)
-    
-    # Rotar las etiquetas del eje X
-    plt.xticks(rotation=45, ha='right')
-    
-    # Añadir fuente debajo del gráfico
-    ax.text(0.5, -0.25, 'Fuente: Cutipa C. Jaramillo A. Quenaya F. Amaro M.', 
+    ax.text(0.5, -0.15, 'Fuente: Cutipa C. Jaramillo A. Quenaya F. Amaro M.', 
             horizontalalignment='center', verticalalignment='center', 
             transform=ax.transAxes, fontsize=8)
-    
     st.pyplot(fig)
-####################################################################################    
+
 # Función para graficar regresión lineal
 def graficar_regresion_lineal(x_data, y_data, titulo):
     # Calcular la regresión lineal
@@ -166,7 +150,7 @@ def regresion_energia_clasificacion_dunham():
 
     # Llamar la función para graficar
     graficar_regresion_lineal(x, y, "Regresión entre Energía de Ambiente y Clasificación Dunham")
-################################################################################
+
 # Interfaz principal
 st.title("Comparación de Clasificaciones de Rocas Carbonatadas y Evaporíticas")
 
@@ -184,6 +168,10 @@ if muestras_seleccionadas:
 
     st.subheader("Energía del Ambiente")
     graficar_energia_ambiente()
+
+    # Añadir la regresión lineal entre energía de ambiente y clasificación Dunham
+    st.subheader("Regresión entre Energía de Ambiente y Clasificación Dunham")
+    regresion_energia_clasificacion_dunham()
 
 else:
     st.warning("Por favor selecciona al menos una muestra para comparar.")
