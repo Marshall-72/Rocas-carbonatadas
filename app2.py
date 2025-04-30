@@ -55,28 +55,22 @@ def mapear_clasificacion(diccionario):
     mapa = {cat: i for i, cat in enumerate(categorias)}
     return mapa, categorias
 
-# Función de graficación mejorada
+# Función para graficar
 def graficar_categorizacion(titulo, datos, muestras_filtradas):
     mapa, categorias = mapear_clasificacion(datos)
     x = []
     y = []
-    etiquetas = []
     colores = []
-    
+
     for i, muestra in enumerate(muestras_filtradas):
         categoria = datos.get(muestra, "N/A")
         if categoria != "N/A":
             x.append(i)
             y.append(mapa[categoria])
-            etiquetas.append(categoria)
             colores.append(i)
 
     fig, ax = plt.subplots(figsize=(max(6, len(muestras_filtradas)*0.9), 4))
     scatter = ax.scatter(x, y, c=colores, cmap='tab10', s=120)
-
-    # Etiquetas sobre cada punto
-    for xi, yi, etiqueta in zip(x, y, etiquetas):
-        ax.text(xi, yi + 0.1, etiqueta, ha='center', va='bottom', fontsize=9)
 
     ax.set_xticks(range(len(muestras_filtradas)))
     ax.set_xticklabels(muestras_filtradas, rotation=30, ha='right')
@@ -86,6 +80,9 @@ def graficar_categorizacion(titulo, datos, muestras_filtradas):
     ax.set_xlabel("Muestras")
     ax.set_ylabel("Clasificación")
     ax.grid(axis='y', linestyle='--', alpha=0.5)
+
+    # Agregar fuente debajo del gráfico
+    fig.text(0.5, -0.05, "Fuente: Cutipa C., Jaramillo A., Quenaya F., Amaro M.", ha='center', fontsize=9, style='italic')
 
     st.pyplot(fig)
 
@@ -105,4 +102,3 @@ if muestras_seleccionadas:
     graficar_categorizacion("Ambiente de Formación", ambiente_formacion, muestras_seleccionadas)
 else:
     st.warning("Por favor selecciona al menos una muestra para comparar.")
-
