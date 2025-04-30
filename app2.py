@@ -171,7 +171,12 @@ def regresion_energia_clasificacion_dunham():
     # Llamar la función para graficar
     graficar_regresion_lineal(x, y, "Regresión entre Energía de Ambiente y Clasificación Dunham")
 
+# Encabezado con imagen
+st.image("https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Geology_icon.svg/600px-Geology_icon.svg.png", 
+         width=100, caption="Clasificación de rocas carbonatadas y evaporíticas")
 
+st.markdown("<h1 style='text-align: center; color: #4C4C4C;'>Análisis de Rocas Carbonatadas y Evaporíticas</h1>", unsafe_allow_html=True)
+st.markdown("---")
 
 # Interfaz principal
 st.title("Comparación de Clasificaciones de Rocas Carbonatadas y Evaporíticas")
