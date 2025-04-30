@@ -77,7 +77,7 @@ def graficar_categorizacion(titulo, datos, etiquetas=None):
 
     for i, muestra in enumerate(muestras):
         categoria = datos.get(muestra, "N/A")
-        if categoria != "N/A":
+        if categoria != "N/A" and muestra in muestras_seleccionadas:
             x.append(muestra)
             y.append(mapa[categoria])
             colores.append(i)
@@ -90,6 +90,9 @@ def graficar_categorizacion(titulo, datos, etiquetas=None):
     ax.set_xlabel("Muestras")
     ax.set_title(titulo)
     ax.grid(True, axis='y', linestyle='--', alpha=0.4)
+    
+    # Rotar las etiquetas del eje X
+    plt.xticks(rotation=45, ha='right')
     
     # Añadir fuente debajo del gráfico
     ax.text(0.5, -0.15, 'Fuente: Cutipa C. Jaramillo A. Quenaya F. Amaro M.', 
@@ -104,8 +107,8 @@ def graficar_categorizacion(titulo, datos, etiquetas=None):
 
 # Función para graficar energía del ambiente
 def graficar_energia_ambiente():
-    x = list(muestras)
-    y = [energia_ambiente.get(muestra, 0) for muestra in muestras]
+    x = [muestra for muestra in muestras_seleccionadas]
+    y = [energia_ambiente.get(muestra, 0) for muestra in muestras_seleccionadas]
     
     fig, ax = plt.subplots()
     scatter = ax.scatter(x, y, c=y, cmap='viridis', s=100)
@@ -114,6 +117,9 @@ def graficar_energia_ambiente():
     ax.set_title("Energía del ambiente de las rocas")
     fig.colorbar(scatter, ax=ax, label='Energía')
     ax.grid(True, linestyle='--', alpha=0.4)
+    
+    # Rotar las etiquetas del eje X
+    plt.xticks(rotation=45, ha='right')
     
     # Añadir fuente debajo del gráfico
     ax.text(0.5, -0.15, 'Fuente: Cutipa C. Jaramillo A. Quenaya F. Amaro M.', 
