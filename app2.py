@@ -95,7 +95,7 @@ def graficar_categorizacion(titulo, datos, etiquetas=None):
     plt.xticks(rotation=45, ha='right')
     
     # Añadir fuente debajo del gráfico
-    ax.text(0.5, -0.15, 'Fuente: Cutipa C. Jaramillo A. Quenaya F. Amaro M.', 
+    ax.text(0.5, -0.25, 'Fuente: Cutipa C. Jaramillo A. Quenaya F. Amaro M.', 
             horizontalalignment='center', verticalalignment='center', 
             transform=ax.transAxes, fontsize=8)
     
@@ -122,7 +122,7 @@ def graficar_energia_ambiente():
     plt.xticks(rotation=45, ha='right')
     
     # Añadir fuente debajo del gráfico
-    ax.text(0.5, -0.15, 'Fuente: Cutipa C. Jaramillo A. Quenaya F. Amaro M.', 
+    ax.text(0.5, -0.25, 'Fuente: Cutipa C. Jaramillo A. Quenaya F. Amaro M.', 
             horizontalalignment='center', verticalalignment='center', 
             transform=ax.transAxes, fontsize=8)
     
