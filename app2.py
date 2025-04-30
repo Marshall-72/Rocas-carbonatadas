@@ -1,7 +1,7 @@
 import streamlit as st
 import matplotlib.pyplot as plt
 
-# Datos
+# Datos de ejemplo (puedes modificarlos según tus muestras reales)
 muestras = [
     "Caliza de Tacna",
     "Caliza de Puno",
@@ -13,7 +13,6 @@ muestras = [
     "Baritina"
 ]
 
-# Clasificaciones existentes
 clasificacion_dunham = {
     "Caliza de Tacna": "Mudstone",
     "Caliza de Puno": "Wackestone",
@@ -47,16 +46,16 @@ ambiente_formacion = {
     "Baritina": "Ambiente hidrotermal"
 }
 
-# Energía de Ambiente
+# Nueva clasificación de energía del ambiente (escala 1-10)
 energia_ambiente = {
-    "Caliza de Tacna": "Bajo",
-    "Caliza de Puno": "Bajo",
-    "Caliza con fósil": "Bajo",
-    "Marga de Tacna": "Bajo",
-    "Halita": "Alto",
-    "Yeso": "Alto",
-    "Coquina": "Alto",
-    "Baritina": "Bajo"
+    "Caliza de Tacna": 3,   # Baja energía
+    "Caliza de Puno": 3,    # Baja energía
+    "Caliza con fósil": 4,  # Baja energía
+    "Marga de Tacna": 2,    # Baja energía
+    "Halita": 9,            # Alta energía
+    "Yeso": 8,              # Alta energía
+    "Coquina": 7,           # Alta energía
+    "Baritina": 6           # Moderada energía
 }
 
 # Función para obtener los valores únicos y mapear a números para eje Y
@@ -69,78 +68,77 @@ def mapear_clasificacion(diccionario):
     return mapa, categorias
 
 # Función para graficar clasificaciones
-def graficar_categorizacion(titulo, datos, muestras_filtradas):
+def graficar_categorizacion(titulo, datos, etiquetas=None):
     mapa, categorias = mapear_clasificacion(datos)
     x = []
     y = []
     colores = []
+    etiquetas_lista = []
 
-    for i, muestra in enumerate(muestras_filtradas):
+    for i, muestra in enumerate(muestras):
         categoria = datos.get(muestra, "N/A")
         if categoria != "N/A":
             x.append(muestra)
             y.append(mapa[categoria])
             colores.append(i)
+            etiquetas_lista.append(categoria)
 
-    fig, ax = plt.subplots(figsize=(max(6, len(muestras_filtradas)*0.9), 4))
+    fig, ax = plt.subplots()
     ax.scatter(x, y, c=colores, cmap='tab10', s=100)
     ax.set_yticks(list(mapa.values()))
     ax.set_yticklabels(categorias)
     ax.set_xlabel("Muestras")
     ax.set_title(titulo)
     ax.grid(True, axis='y', linestyle='--', alpha=0.4)
-
-    # Fuente
-    fig.text(0.5, -0.15, "Fuente: Cutipa C., Jaramillo A., Quenaya F., Amaro M.", ha='center', fontsize=9, style='italic')
-
+    
+    # Añadir fuente debajo del gráfico
+    ax.text(0.5, -0.15, 'Fuente: Cutipa C. Jaramillo A. Quenaya F. Amaro M.', 
+            horizontalalignment='center', verticalalignment='center', 
+            transform=ax.transAxes, fontsize=8)
+    
+    if etiquetas:
+        for i, etiqueta in enumerate(etiquetas_lista):
+            ax.annotate(etiqueta, (x[i], y[i]), fontsize=8, ha='center')
+    
     st.pyplot(fig)
 
-# Función para graficar según energía de ambiente
-def graficar_energia(titulo, datos, muestras_filtradas):
-    mapa, categorias = mapear_clasificacion(datos)
-    x = []
-    y = []
-    colores = []
-
-    for i, muestra in enumerate(muestras_filtradas):
-        categoria = datos.get(muestra, "Bajo")
-        x.append(i)
-        y.append(mapa[categoria])
-        colores.append(i)
-
-    fig, ax = plt.subplots(figsize=(max(6, len(muestras_filtradas)*0.9), 4))
-    scatter = ax.scatter(x, y, c=colores, cmap='viridis', s=120)
-
-    ax.set_xticks(range(len(muestras_filtradas)))
-    ax.set_xticklabels(muestras_filtradas, rotation=30, ha='right')
-    ax.set_yticks(list(mapa.values()))
-    ax.set_yticklabels(categorias)
-    ax.set_title(titulo)
+# Función para graficar energía del ambiente
+def graficar_energia_ambiente():
+    x = list(muestras)
+    y = [energia_ambiente.get(muestra, 0) for muestra in muestras]
+    
+    fig, ax = plt.subplots()
+    scatter = ax.scatter(x, y, c=y, cmap='viridis', s=100)
     ax.set_xlabel("Muestras")
-    ax.set_ylabel("Energía del ambiente")
-    ax.grid(axis='y', linestyle='--', alpha=0.5)
-
-    # Agregar fuente más abajo
-    fig.text(0.5, -0.15, "Fuente: Cutipa C., Jaramillo A., Quenaya F., Amaro M.", ha='center', fontsize=9, style='italic')
-
+    ax.set_ylabel("Energía del ambiente (1-10)")
+    ax.set_title("Energía del ambiente de las rocas")
+    fig.colorbar(scatter, ax=ax, label='Energía')
+    ax.grid(True, linestyle='--', alpha=0.4)
+    
+    # Añadir fuente debajo del gráfico
+    ax.text(0.5, -0.15, 'Fuente: Cutipa C. Jaramillo A. Quenaya F. Amaro M.', 
+            horizontalalignment='center', verticalalignment='center', 
+            transform=ax.transAxes, fontsize=8)
+    
     st.pyplot(fig)
 
 # Interfaz principal
-st.title("Comparación de Rocas Carbonatadas y Evaporíticas")
+st.title("Comparación de Clasificaciones de Rocas Carbonatadas y Evaporíticas")
 
 muestras_seleccionadas = st.multiselect("Selecciona las muestras a comparar:", muestras, default=muestras)
 
 if muestras_seleccionadas:
     st.subheader("Clasificación según Dunham (1962)")
-    graficar_categorizacion("Clasificación Dunham", clasificacion_dunham, muestras_seleccionadas)
+    graficar_categorizacion("Clasificación Dunham", {k: v for k, v in clasificacion_dunham.items() if k in muestras_seleccionadas})
 
     st.subheader("Clasificación según Folk (1974)")
-    graficar_categorizacion("Clasificación Folk", clasificacion_folk, muestras_seleccionadas)
+    graficar_categorizacion("Clasificación Folk", {k: v for k, v in clasificacion_folk.items() if k in muestras_seleccionadas})
 
     st.subheader("Ambiente de Formación")
-    graficar_categorizacion("Ambiente de Formación", ambiente_formacion, muestras_seleccionadas)
+    graficar_categorizacion("Ambiente de Formación", {k: v for k, v in ambiente_formacion.items() if k in muestras_seleccionadas})
 
     st.subheader("Energía del Ambiente")
-    graficar_energia("Energía del Ambiente", energia_ambiente, muestras_seleccionadas)
+    graficar_energia_ambiente()
+
 else:
     st.warning("Por favor selecciona al menos una muestra para comparar.")
