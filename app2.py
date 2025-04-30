@@ -173,10 +173,7 @@ def regresion_energia_clasificacion_dunham():
 
 # Encabezado con imagen
 st.image("https://esge.unjbg.edu.pe/portal-web/ingenieria-geologica-geotecnia/section/c2909719-d8de-4e37-97d3-42137a7651cf.png", 
-         width=100, caption="Clasificación de rocas carbonatadas y evaporíticas")
-
-st.markdown("<h1 style='text-align: center; color: #4C4C4C;'>Análisis de Rocas Carbonatadas y Evaporíticas</h1>", unsafe_allow_html=True)
-st.markdown("---")
+         width=1000)
 
 # Interfaz principal
 st.title("Comparación de Clasificaciones de Rocas Carbonatadas y Evaporíticas")
