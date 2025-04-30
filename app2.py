@@ -70,7 +70,7 @@ def mapear_clasificacion(diccionario):
     return mapa, categorias
 
 # Función para graficar clasificaciones
-def graficar_categorizacion(titulo, datos):
+def graficar_categorizacion(titulo, datos, rotar_ejes=False):
     mapa, categorias = mapear_clasificacion(datos)
     x = []
     y = []
@@ -92,6 +92,11 @@ def graficar_categorizacion(titulo, datos):
     ax.set_xlabel("Muestras")
     ax.set_title(titulo)
     ax.grid(True, axis='y', linestyle='--', alpha=0.4)
+
+    # Rotar las etiquetas del eje X si es necesario
+    if rotar_ejes:
+        plt.xticks(rotation=45, ha="right")
+
     ax.text(0.5, -0.15, 'Fuente: Cutipa C. Jaramillo A. Quenaya F. Amaro M.', 
             horizontalalignment='center', verticalalignment='center', 
             transform=ax.transAxes, fontsize=8)
@@ -139,6 +144,10 @@ def graficar_regresion_lineal(x_data, y_data, titulo):
             horizontalalignment='center', verticalalignment='center', 
             transform=ax.transAxes, fontsize=8)
 
+    # Descripción breve en el gráfico
+    ax.text(0.05, 0.85, "Este gráfico muestra la relación entre la energía de ambiente y la clasificación Dunham de las rocas.", 
+            transform=ax.transAxes, fontsize=10, verticalalignment='top', color='black')
+
     st.pyplot(fig)
 
 # Función para graficar la regresión entre energía de ambiente y clasificación Dunham
@@ -158,13 +167,13 @@ muestras_seleccionadas = st.multiselect("Selecciona las muestras a comparar:", m
 
 if muestras_seleccionadas:
     st.subheader("Clasificación según Dunham (1962)")
-    graficar_categorizacion("Clasificación Dunham", {k: v for k, v in clasificacion_dunham.items() if k in muestras_seleccionadas})
+    graficar_categorizacion("Clasificación Dunham", {k: v for k, v in clasificacion_dunham.items() if k in muestras_seleccionadas}, rotar_ejes=True)
 
     st.subheader("Clasificación según Folk (1974)")
-    graficar_categorizacion("Clasificación Folk", {k: v for k, v in clasificacion_folk.items() if k in muestras_seleccionadas})
+    graficar_categorizacion("Clasificación Folk", {k: v for k, v in clasificacion_folk.items() if k in muestras_seleccionadas}, rotar_ejes=True)
 
     st.subheader("Ambiente de Formación")
-    graficar_categorizacion("Ambiente de Formación", {k: v for k, v in ambiente_formacion.items() if k in muestras_seleccionadas})
+    graficar_categorizacion("Ambiente de Formación", {k: v for k, v in ambiente_formacion.items() if k in muestras_seleccionadas}, rotar_ejes=True)
 
     st.subheader("Energía del Ambiente")
     graficar_energia_ambiente()
@@ -174,4 +183,5 @@ if muestras_seleccionadas:
     regresion_energia_clasificacion_dunham()
 
 else:
-    st.warning("Por favor selecciona al menos una muestra para comparar.")
+    st.warning("Por favor selecciona al menos una muestra para continuar.")
+
