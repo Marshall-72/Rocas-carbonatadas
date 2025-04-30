@@ -172,6 +172,32 @@ def regresion_energia_clasificacion_dunham():
     graficar_regresion_lineal(x, y, "Regresión entre Energía de Ambiente y Clasificación Dunham")
 
 
+
+# Interfaz principal
+st.title("Comparación de Clasificaciones de Rocas Carbonatadas y Evaporíticas")
+
+muestras_seleccionadas = st.multiselect("Selecciona las muestras a comparar:", muestras, default=muestras)
+
+if muestras_seleccionadas:
+    st.subheader("Clasificación según Dunham (1962)")
+    graficar_categorizacion("Clasificación Dunham", {k: v for k, v in clasificacion_dunham.items() if k in muestras_seleccionadas}, rotar_ejes=True)
+
+    st.subheader("Clasificación según Folk (1974)")
+    graficar_categorizacion("Clasificación Folk", {k: v for k, v in clasificacion_folk.items() if k in muestras_seleccionadas}, rotar_ejes=True)
+
+    st.subheader("Ambiente de Formación")
+    graficar_categorizacion("Ambiente de Formación", {k: v for k, v in ambiente_formacion.items() if k in muestras_seleccionadas}, rotar_ejes=True)
+
+    st.subheader("Energía del Ambiente")
+    graficar_energia_ambiente()
+
+    # Añadir la regresión lineal entre energía de ambiente y clasificación Dunham
+    st.subheader("Regresión entre Energía de Ambiente y Clasificación Dunham")
+    regresion_energia_clasificacion_dunham()
+
+else:
+    st.warning("Por favor selecciona al menos una muestra para continuar.")
+
 # ---- Sección de preguntas interpretativas ----
 st.markdown("---")
 st.header("Preguntas interpretativas")
@@ -212,30 +238,4 @@ preguntas_respuestas = {
 pregunta_seleccionada = st.selectbox("Selecciona una pregunta para ver su respuesta:", list(preguntas_respuestas.keys()))
 st.markdown(f"**Pregunta:** {pregunta_seleccionada}")
 st.markdown(f"**Respuesta:** {preguntas_respuestas[pregunta_seleccionada]}")
-
-
-# Interfaz principal
-st.title("Comparación de Clasificaciones de Rocas Carbonatadas y Evaporíticas")
-
-muestras_seleccionadas = st.multiselect("Selecciona las muestras a comparar:", muestras, default=muestras)
-
-if muestras_seleccionadas:
-    st.subheader("Clasificación según Dunham (1962)")
-    graficar_categorizacion("Clasificación Dunham", {k: v for k, v in clasificacion_dunham.items() if k in muestras_seleccionadas}, rotar_ejes=True)
-
-    st.subheader("Clasificación según Folk (1974)")
-    graficar_categorizacion("Clasificación Folk", {k: v for k, v in clasificacion_folk.items() if k in muestras_seleccionadas}, rotar_ejes=True)
-
-    st.subheader("Ambiente de Formación")
-    graficar_categorizacion("Ambiente de Formación", {k: v for k, v in ambiente_formacion.items() if k in muestras_seleccionadas}, rotar_ejes=True)
-
-    st.subheader("Energía del Ambiente")
-    graficar_energia_ambiente()
-
-    # Añadir la regresión lineal entre energía de ambiente y clasificación Dunham
-    st.subheader("Regresión entre Energía de Ambiente y Clasificación Dunham")
-    regresion_energia_clasificacion_dunham()
-
-else:
-    st.warning("Por favor selecciona al menos una muestra para continuar.")
 
