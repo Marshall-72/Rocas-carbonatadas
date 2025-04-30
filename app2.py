@@ -82,7 +82,7 @@ def graficar_categorizacion(titulo, datos, muestras_filtradas):
     ax.grid(axis='y', linestyle='--', alpha=0.5)
 
     # Agregar fuente debajo del gráfico
-    fig.text(0.5, -0.05, "Fuente: Cutipa C., Jaramillo A., Quenaya F., Amaro M.", ha='center', fontsize=9, style='italic')
+    fig.text(0.5, -0.12, "Fuente: Cutipa C., Jaramillo A., Quenaya F., Amaro M.", ha='center', fontsize=9, style='italic')
 
     st.pyplot(fig)
 
