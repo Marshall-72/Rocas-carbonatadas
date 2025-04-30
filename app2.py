@@ -171,6 +171,49 @@ def regresion_energia_clasificacion_dunham():
     # Llamar la función para graficar
     graficar_regresion_lineal(x, y, "Regresión entre Energía de Ambiente y Clasificación Dunham")
 
+
+# ---- Sección de preguntas interpretativas ----
+st.markdown("---")
+st.header("Preguntas interpretativas")
+
+preguntas_respuestas = {
+    "¿Cómo se pueden identificar los tres elementos texturales: armazón, matriz y cemento? ¿Por su color, tamaño, etc.?":
+        "El armazón se identifica como los granos más grandes y visibles, la matriz como el material fino entre estos granos, y el cemento como el material que une los granos. Se pueden diferenciar por tamaño, forma, y en ocasiones color o brillo bajo el microscopio.",
+    
+    "Si se tiene una roca denominada caliza aloquímica microcristalina, ¿qué tipo de ambiente deposicional pudo tener?":
+        "Ambientes de baja energía, posiblemente lagunas o plataformas carbonatadas protegidas, donde se favorece la deposición de partículas finas como micrita.",
+    
+    "¿Qué tipos de rocas calcáreas se generan en ambientes de baja energía? ¿Y en ambientes de alta energía? Explique.":
+        "En ambientes de baja energía se forman micritas y wackestones, con partículas finas y abundante matriz. En ambientes de alta energía se forman grainstones y packstones, con granos bien seleccionados y poco o nada de matriz.",
+    
+    "Sitúe en una clasificación triangular los siguientes tipos de rocas:\n- Calizas aloquímicas esparíticas.\n- Calizas aloquímicas microcristalinas.\n- Calizas microcristalinas micríticas.":
+        "Estas calizas se ubican según la proporción de allochem (componentes aloquímicos), matriz micrítica y cemento esparítico. Las esparíticas irían hacia el vértice de cemento, las microcristalinas al de matriz, y las aloquímicas al de componentes.",
+    
+    "De acuerdo con la naturaleza de los componentes aloquímicos, indique una clasificación que involucre:\n- Intraclastos.\n- Oolitos.\n- Pellets y fósiles.":
+        "Las rocas se clasifican como intraclásticass, oolíticas, pelletal o bioclásticas dependiendo del componente dominante. Ej: una roca con oolitos será una caliza oolítica.",
+    
+    "¿En qué difiere la clasificación para rocas calcáreas de Dunham y de Folk?":
+        "La clasificación de Dunham se basa en la textura y en cómo están ligados los granos, útil en campo; la de Folk considera los componentes minerales y es más detallada, útil en laboratorio.",
+    
+    "¿En qué tipo de ambiente sedimentario se puede encontrar una roca tipo Grainstone?":
+        "En ambientes de alta energía como playas o barras de arena, donde la corriente elimina la matriz fina y permite la acumulación de granos limpios.",
+    
+    "Si una roca presenta ooides, ¿esto ayuda a inferir que se formó en un ambiente de alta o baja energía?":
+        "Alta energía, ya que los ooides se forman por recubrimientos concéntricos de carbonato debido al movimiento constante en aguas agitadas.",
+    
+    "Si una roca presenta alto contenido de micrita, ¿a qué tipo de ambiente podemos referirnos?":
+        "Ambientes de baja energía, como lagunas restringidas o zonas protegidas de plataformas carbonatadas, donde se acumulan partículas finas.",
+    
+    "¿Qué importancia tienen las rocas carbonatadas en la generación y acumulación de hidrocarburos?":
+        "Son excelentes rocas reservorio por su porosidad secundaria y fracturas. Además, pueden actuar como roca generadora si tienen materia orgánica, especialmente en ambientes anóxicos marinos."
+}
+
+# Barra desplegable para seleccionar y mostrar pregunta + respuesta
+pregunta_seleccionada = st.selectbox("Selecciona una pregunta para ver su respuesta:", list(preguntas_respuestas.keys()))
+st.markdown(f"**Pregunta:** {pregunta_seleccionada}")
+st.markdown(f"**Respuesta:** {preguntas_respuestas[pregunta_seleccionada]}")
+
+
 # Interfaz principal
 st.title("Comparación de Clasificaciones de Rocas Carbonatadas y Evaporíticas")
 
