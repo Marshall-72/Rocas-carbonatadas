@@ -1,106 +1,101 @@
 import streamlit as st
 import matplotlib.pyplot as plt
 
-# Datos de las muestras
-muestras = {
-    "Caliza de Tacna": {
-        "textura_dunham": "Mudstone",
-        "clasificacion_folk": "Micrita",
-        "ambiente": "Marino somero"
-    },
-    "Caliza de Puno": {
-        "textura_dunham": "Wackestone",
-        "clasificacion_folk": "Biomicrita",
-        "ambiente": "Plataforma carbonatada"
-    },
-    "Caliza de Puno con fósil": {
-        "textura_dunham": "Packstone",
-        "clasificacion_folk": "Biomicrita",
-        "ambiente": "Plataforma interna"
-    },
-    "Marga de Tacna": {
-        "textura_dunham": "Mudstone",
-        "clasificacion_folk": "Micrita",
-        "ambiente": "Laguna"
-    },
-    "Halita": {
-        "textura_dunham": "Cristalina",
-        "clasificacion_folk": "No aplica",
-        "ambiente": "Evaporítico"
-    },
-    "Yeso": {
-        "textura_dunham": "Cristalina",
-        "clasificacion_folk": "No aplica",
-        "ambiente": "Evaporítico"
-    },
-    "Coquina": {
-        "textura_dunham": "Grainstone",
-        "clasificacion_folk": "Biosparita",
-        "ambiente": "Alta energía costera"
-    },
-    "Baritina": {
-        "textura_dunham": "Cristalina",
-        "clasificacion_folk": "No aplica",
-        "ambiente": "Hidrotermal o evaporítico"
-    }
+# Datos de ejemplo (puedes modificarlos según tus muestras reales)
+muestras = [
+    "Caliza de Tacna",
+    "Caliza de Puno",
+    "Caliza con fósil",
+    "Marga de Tacna",
+    "Halita",
+    "Yeso",
+    "Coquina",
+    "Baritina"
+]
+
+clasificacion_dunham = {
+    "Caliza de Tacna": "Mudstone",
+    "Caliza de Puno": "Wackestone",
+    "Caliza con fósil": "Packstone",
+    "Marga de Tacna": "Mudstone",
+    "Halita": "N/A",
+    "Yeso": "N/A",
+    "Coquina": "Grainstone",
+    "Baritina": "N/A"
 }
 
-st.title("Comparador de Rocas Carbonatadas y Evaporíticas")
-
-seleccionadas = st.multiselect("Selecciona las muestras a comparar:", list(muestras.keys()))
-
-# Colores por categoría (fijos para mantener consistencia)
-colores_textura = {
-    "Mudstone": "skyblue",
-    "Wackestone": "orange",
-    "Packstone": "green",
-    "Grainstone": "purple",
-    "Cristalina": "red"
+clasificacion_folk = {
+    "Caliza de Tacna": "Micrita",
+    "Caliza de Puno": "Biomicrita",
+    "Caliza con fósil": "Biopelsparita",
+    "Marga de Tacna": "Micrita",
+    "Halita": "N/A",
+    "Yeso": "N/A",
+    "Coquina": "Biosparita",
+    "Baritina": "N/A"
 }
 
-colores_folk = {
-    "Micrita": "blue",
-    "Biomicrita": "orange",
-    "Biosparita": "green",
-    "No aplica": "gray"
+ambiente_formacion = {
+    "Caliza de Tacna": "Marino somero",
+    "Caliza de Puno": "Marino somero",
+    "Caliza con fósil": "Marino somero",
+    "Marga de Tacna": "Marino somero",
+    "Halita": "Ambiente evaporítico",
+    "Yeso": "Ambiente evaporítico",
+    "Coquina": "Playa/alto-energía",
+    "Baritina": "Ambiente hidrotermal"
 }
 
-colores_ambiente = {
-    "Marino somero": "navy",
-    "Plataforma carbonatada": "cyan",
-    "Plataforma interna": "teal",
-    "Laguna": "brown",
-    "Evaporítico": "pink",
-    "Alta energía costera": "gold",
-    "Hidrotermal o evaporítico": "darkred"
-}
+# Función para obtener los valores únicos y mapear a números para eje Y
 
-def graficar_clasificacion(titulo, atributo, colores_dict):
+def mapear_clasificacion(diccionario):
+    categorias = list(sorted(set(diccionario.values())))
+    if "N/A" in categorias:
+        categorias.remove("N/A")
+        categorias.append("N/A")  # para que "N/A" vaya al final
+    mapa = {cat: i for i, cat in enumerate(categorias)}
+    return mapa, categorias
+
+# Función para graficar clasificaciones
+
+def graficar_categorizacion(titulo, datos):
+    mapa, categorias = mapear_clasificacion(datos)
+    x = []
+    y = []
+    colores = []
+    etiquetas = []
+
+    for i, muestra in enumerate(muestras):
+        categoria = datos.get(muestra, "N/A")
+        if categoria != "N/A":
+            x.append(muestra)
+            y.append(mapa[categoria])
+            colores.append(i)
+            etiquetas.append(categoria)
+
     fig, ax = plt.subplots()
-    categorias = list(colores_dict.keys())
-    valores = {cat: [] for cat in categorias}
-    muestras_x = seleccionadas
-
-    for muestra in seleccionadas:
-        cat = muestras[muestra][atributo]
-        for c in categorias:
-            valores[c].append(1 if c == cat else 0)
-
-    for cat in categorias:
-        ax.bar(muestras_x, valores[cat], label=cat, color=colores_dict[cat], bottom=[sum(valores[c][i] for c in list(valores.keys())[:list(valores.keys()).index(cat)]) for i in range(len(muestras_x))])
-
-    ax.set_ylabel("Clasificación")
+    ax.scatter(x, y, c=colores, cmap='tab10', s=100)
+    ax.set_yticks(list(mapa.values()))
+    ax.set_yticklabels(categorias)
+    ax.set_xlabel("Muestras")
     ax.set_title(titulo)
-    ax.set_xticks(range(len(muestras_x)))
-    ax.set_xticklabels(muestras_x, rotation=45, ha="right")
-    ax.legend(title="Categorías")
+    ax.grid(True, axis='y', linestyle='--', alpha=0.4)
     st.pyplot(fig)
 
-if seleccionadas:
-    graficar_clasificacion("Clasificación Textural (Dunham, 1962)", "textura_dunham", colores_textura)
-    graficar_clasificacion("Clasificación de Calizas (Folk, 1974)", "clasificacion_folk", colores_folk)
-    graficar_clasificacion("Ambiente Sedimentario", "ambiente", colores_ambiente)
-else:
-    st.info("Selecciona al menos una muestra para visualizar los gráficos.")
+# Interfaz principal
+st.title("Comparación de Clasificaciones de Rocas Carbonatadas y Evaporíticas")
 
+muestras_seleccionadas = st.multiselect("Selecciona las muestras a comparar:", muestras, default=muestras)
+
+if muestras_seleccionadas:
+    st.subheader("Clasificación según Dunham (1962)")
+    graficar_categorizacion("Clasificación Dunham", {k: v for k, v in clasificacion_dunham.items() if k in muestras_seleccionadas})
+
+    st.subheader("Clasificación según Folk (1974)")
+    graficar_categorizacion("Clasificación Folk", {k: v for k, v in clasificacion_folk.items() if k in muestras_seleccionadas})
+
+    st.subheader("Ambiente de Formación")
+    graficar_categorizacion("Ambiente de Formación", {k: v for k, v in ambiente_formacion.items() if k in muestras_seleccionadas})
+else:
+    st.warning("Por favor selecciona al menos una muestra para comparar.")
 
