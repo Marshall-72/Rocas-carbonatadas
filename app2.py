@@ -117,7 +117,7 @@ def graficar_energia_ambiente():
             transform=ax.transAxes, fontsize=8)
     st.pyplot(fig)
 
-# Función para graficar regresión lineal
+# Función para graficar regresión lineal con la descripción debajo del gráfico
 def graficar_regresion_lineal(x_data, y_data, titulo):
     # Calcular la regresión lineal
     slope, intercept, r_value, p_value, std_err = stats.linregress(x_data, y_data)
@@ -139,16 +139,18 @@ def graficar_regresion_lineal(x_data, y_data, titulo):
     # Añadir la ecuación y el valor R² en el gráfico
     ax.text(0.05, 0.95, f'$R^2$ = {r_value**2:.2f}', transform=ax.transAxes, fontsize=12, verticalalignment='top')
     
-    # Añadir fuente debajo del gráfico
+    # Fuente debajo del gráfico
     ax.text(0.5, -0.15, 'Fuente: Cutipa C. Jaramillo A. Quenaya F. Amaro M.', 
             horizontalalignment='center', verticalalignment='center', 
             transform=ax.transAxes, fontsize=8)
 
-    # Descripción breve en el gráfico
-    ax.text(0.05, 0.85, "Este gráfico muestra la relación entre la energía de ambiente y la clasificación Dunham de las rocas.", 
-            transform=ax.transAxes, fontsize=10, verticalalignment='top', color='black')
-
     st.pyplot(fig)
+
+    # Descripción del gráfico debajo
+    st.markdown(
+        "*Este gráfico muestra la relación entre la energía del ambiente (asignada en un rango de 1 a 10) y la clasificación Dunham de las rocas seleccionadas. "
+        "La línea de regresión sugiere una posible tendencia o correlación entre ambos parámetros.*"
+    )
 
 # Función para graficar la regresión entre energía de ambiente y clasificación Dunham
 def regresion_energia_clasificacion_dunham():
