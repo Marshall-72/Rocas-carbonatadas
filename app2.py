@@ -97,7 +97,7 @@ def graficar_categorizacion(titulo, datos, rotar_ejes=False):
     if rotar_ejes:
         plt.xticks(rotation=45, ha="right")
 
-    ax.text(0.5, -0.25, 'Fuente: Cutipa C. Jaramillo A. Quenaya F. Amaro M.', 
+    ax.text(0.5, -0.35, 'Fuente: Cutipa C. Jaramillo A. Quenaya F. Amaro M.', 
             horizontalalignment='center', verticalalignment='center', 
             transform=ax.transAxes, fontsize=8)
     st.pyplot(fig)
@@ -119,7 +119,7 @@ def graficar_energia_ambiente():
     plt.xticks(rotation=45, ha='right')
     
     # Añadir fuente debajo del gráfico
-    ax.text(0.5, -0.25, 'Fuente: Cutipa C. Jaramillo A. Quenaya F. Amaro M.', 
+    ax.text(0.5, -0.35, 'Fuente: Cutipa C. Jaramillo A. Quenaya F. Amaro M.', 
             horizontalalignment='center', verticalalignment='center', 
             transform=ax.transAxes, fontsize=8)
     
