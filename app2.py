@@ -1,71 +1,57 @@
 import streamlit as st
 import matplotlib.pyplot as plt
-import seaborn as sns
+import numpy as np
 
-# Datos de las rocas
-rocas = [
-    {"Roca": "Caliza de Tacna", "Mineral Principal": "Calcita", "Composición": "Carbonato", "Porosidad": "Media", "Textura": "Granular", "Solubilidad en Ácido Clorhídrico": "Alta", "Presencia de Fósiles": "No", "Color": "Blanco"},
-    {"Roca": "Caliza de Puno", "Mineral Principal": "Calcita", "Composición": "Carbonato", "Porosidad": "Media", "Textura": "Granular", "Solubilidad en Ácido Clorhídrico": "Alta", "Presencia de Fósiles": "No", "Color": "Blanco"},
-    {"Roca": "Caliza de Puno (con fósil)", "Mineral Principal": "Calcita", "Composición": "Carbonato", "Porosidad": "Alta", "Textura": "Fósilífera", "Solubilidad en Ácido Clorhídrico": "Alta", "Presencia de Fósiles": "Sí", "Color": "Blanco"},
-    {"Roca": "Marga de Tacna", "Mineral Principal": "Calcita", "Composición": "Carbonato", "Porosidad": "Media", "Textura": "Granular", "Solubilidad en Ácido Clorhídrico": "Alta", "Presencia de Fósiles": "No", "Color": "Gris"},
-    {"Roca": "Halita", "Mineral Principal": "Halita", "Composición": "Sal", "Porosidad": "Alta", "Textura": "Masiva", "Solubilidad en Ácido Clorhídrico": "Alta", "Presencia de Fósiles": "No", "Color": "Translúcido"},
-    {"Roca": "Yeso", "Mineral Principal": "Yeso", "Composición": "Sulfato", "Porosidad": "Baja", "Textura": "Masiva", "Solubilidad en Ácido Clorhídrico": "Baja", "Presencia de Fósiles": "No", "Color": "Blanco"},
-    {"Roca": "Coquina", "Mineral Principal": "Calcita", "Composición": "Carbonato", "Porosidad": "Alta", "Textura": "Fósilífera", "Solubilidad en Ácido Clorhídrico": "Alta", "Presencia de Fósiles": "Sí", "Color": "Blanco"},
-    {"Roca": "Baritina", "Mineral Principal": "Baritina", "Composición": "Sulfato", "Porosidad": "Baja", "Textura": "Masiva", "Solubilidad en Ácido Clorhídrico": "Baja", "Presencia de Fósiles": "No", "Color": "Blanco"}
-]
+# Datos aproximados de la composición mineralógica de cada muestra
+# Los valores son representaciones de la composición mineral (porcentaje aproximado de cada mineral)
+samples_composition = {
+    'Caliza de Tacna': {'calcita': 85, 'arcilla': 5, 'cuarzo': 7, 'otros': 3},
+    'Caliza de Puno': {'calcita': 80, 'arcilla': 10, 'cuarzo': 5, 'otros': 5},
+    'Caliza de Puno con fósil': {'calcita': 75, 'arcilla': 12, 'cuarzo': 8, 'otros': 5},
+    'Marga de Tacna': {'calcita': 70, 'arcilla': 15, 'cuarzo': 10, 'otros': 5},
+    'Halita': {'calcita': 10, 'arcilla': 5, 'cuarzo': 1, 'otros': 84},
+    'Yeso': {'calcita': 5, 'arcilla': 3, 'cuarzo': 2, 'otros': 90},
+    'Coquina': {'calcita': 95, 'arcilla': 0, 'cuarzo': 3, 'otros': 2},
+    'Baritina': {'calcita': 30, 'arcilla': 2, 'cuarzo': 1, 'otros': 67}
+}
 
-# Convertir los datos a listas para facilitar la visualización en gráficos
-minerales = [roca["Mineral Principal"] for roca in rocas]
-composiciones = [roca["Composición"] for roca in rocas]
-porosidades = [roca["Porosidad"] for roca in rocas]
-fosiles = [roca["Presencia de Fósiles"] for roca in rocas]
+# Configuración de la barra lateral para seleccionar las muestras a comparar
+st.sidebar.title('Seleccionar Muestras a Comparar')
+samples_list = list(samples_composition.keys())
+selected_samples = st.sidebar.multiselect('Selecciona las muestras para comparar', samples_list, default=samples_list)
 
-# Configuración de la interfaz en Streamlit
-st.title("Clasificación de Rocas Carbonatadas y Evaporíticas")
-st.write("Este es un sistema de clasificación de rocas carbonatadas y evaporíticas basado en características típicas.")
+# Mostrar las muestras seleccionadas
+st.write(f"Comparando las composiciones mineralógicas de las muestras seleccionadas:")
 
-# Mostrar tabla con las características de las rocas
-st.subheader("Características de las Rocas:")
-st.write("Roca - Mineral Principal - Composición - Porosidad - Textura - Solubilidad en Ácido Clorhídrico - Presencia de Fósiles - Color")
-for roca in rocas:
-    st.write(f"{roca['Roca']} - {roca['Mineral Principal']} - {roca['Composición']} - {roca['Porosidad']} - {roca['Textura']} - {roca['Solubilidad en Ácido Clorhídrico']} - {roca['Presencia de Fósiles']} - {roca['Color']}")
+# Función para graficar la comparación
+def plot_mineral_composition(selected_samples):
+    # Preparar los datos
+    categories = ['Calcita', 'Arcilla', 'Cuarzo', 'Otros']
+    num_samples = len(selected_samples)
+    
+    # Crear el gráfico
+    fig, ax = plt.subplots(figsize=(10, 6))
 
-# Gráfico comparativo de "Mineral Principal"
-st.subheader("Distribución de Rocas por Mineral Principal")
-fig, ax = plt.subplots()
-sns.countplot(x=minerales, ax=ax)
-ax.set_title("Distribución de Rocas por Mineral Principal")
-ax.set_xlabel("Mineral Principal")
-ax.set_ylabel("Cantidad de Rocas")
-st.pyplot(fig)
+    bar_width = 0.2  # Ancho de las barras
+    index = np.arange(len(categories))  # Las posiciones para las barras
 
-# Gráfico comparativo de "Composición"
-st.subheader("Distribución de Rocas por Composición")
-fig, ax = plt.subplots()
-sns.countplot(x=composiciones, ax=ax)
-ax.set_title("Distribución de Rocas por Composición")
-ax.set_xlabel("Composición")
-ax.set_ylabel("Cantidad de Rocas")
-st.pyplot(fig)
+    for i, sample in enumerate(selected_samples):
+        composition = samples_composition[sample]
+        ax.bar(index + i * bar_width, list(composition.values()), bar_width, label=sample)
 
-# Gráfico comparativo de "Porosidad"
-st.subheader("Distribución de Rocas por Porosidad")
-fig, ax = plt.subplots()
-sns.countplot(x=porosidades, ax=ax)
-ax.set_title("Distribución de Rocas por Porosidad")
-ax.set_xlabel("Porosidad")
-ax.set_ylabel("Cantidad de Rocas")
-st.pyplot(fig)
+    # Etiquetas y leyenda
+    ax.set_xlabel('Minerales')
+    ax.set_ylabel('Porcentaje (%)')
+    ax.set_title('Composición Mineralógica de las Muestras')
+    ax.set_xticks(index + bar_width * (num_samples / 2 - 0.5))
+    ax.set_xticklabels(categories)
+    ax.legend(title='Muestras', loc='upper left', bbox_to_anchor=(1, 1))
+    
+    # Fuente
+    st.text("Fuente: Elaboración propia")
+    
+    # Mostrar el gráfico
+    st.pyplot(fig)
 
-# Gráfico comparativo de "Presencia de Fósiles"
-st.subheader("Distribución de Rocas por Presencia de Fósiles")
-fig, ax = plt.subplots()
-sns.countplot(x=fosiles, ax=ax)
-ax.set_title("Distribución de Rocas por Presencia de Fósiles")
-ax.set_xlabel("Presencia de Fósiles")
-ax.set_ylabel("Cantidad de Rocas")
-st.pyplot(fig)
-
-# Resumen general
-st.subheader("Resumen General")
-st.write("Este análisis permite observar la distribución de las 8 muestras de rocas según diversas características como el mineral principal, composición, porosidad y la presencia de fósiles. Los gráficos comparativos facilitan la visualización de las propiedades de las rocas estudiadas.")
+# Graficar las muestras seleccionadas
+plot_mineral_composition(selected_samples)
