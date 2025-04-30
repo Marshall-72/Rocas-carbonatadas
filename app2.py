@@ -1,77 +1,108 @@
 import streamlit as st
 import matplotlib.pyplot as plt
 
-# Títulos y selección
-st.title("Comparación de Rocas Carbonatadas y Evaporíticas")
-
-# Lista de muestras
+# Datos
 muestras = [
-    "Caliza de Tacna", "Caliza de Puno", "Caliza de Puno con fósil", "Marga de Tacna",
-    "Halita", "Yeso", "Coquina", "Baritina"
+    "Caliza de Tacna",
+    "Caliza de Puno",
+    "Caliza con fósil",
+    "Marga de Tacna",
+    "Halita",
+    "Yeso",
+    "Coquina",
+    "Baritina"
 ]
 
-# Datos simulados (debes reemplazarlos con datos reales si tienes)
-composicion = {
-    "Carbonatos": [90, 85, 88, 60, 0, 0, 70, 0],
-    "Evaporitas": [0, 0, 0, 0, 95, 90, 0, 80]
+clasificacion_dunham = {
+    "Caliza de Tacna": "Mudstone",
+    "Caliza de Puno": "Wackestone",
+    "Caliza con fósil": "Packstone",
+    "Marga de Tacna": "Mudstone",
+    "Halita": "N/A",
+    "Yeso": "N/A",
+    "Coquina": "Grainstone",
+    "Baritina": "N/A"
 }
 
-textura_dunham = {
-    "Mudstone": [1, 0, 0, 1, 0, 0, 0, 0],
-    "Wackestone": [0, 1, 0, 0, 0, 0, 0, 0],
-    "Packstone": [0, 0, 1, 0, 0, 0, 0, 0],
-    "Evaporítica": [0, 0, 0, 0, 1, 1, 0, 1],
-    "Coquina": [0, 0, 0, 0, 0, 0, 1, 0]
+clasificacion_folk = {
+    "Caliza de Tacna": "Micrita",
+    "Caliza de Puno": "Biomicrita",
+    "Caliza con fósil": "Biopelsparita",
+    "Marga de Tacna": "Micrita",
+    "Halita": "N/A",
+    "Yeso": "N/A",
+    "Coquina": "Biosparita",
+    "Baritina": "N/A"
 }
 
-ambientes = {
-    "Amb. marino somero": [1, 1, 1, 1, 0, 0, 1, 0],
-    "Amb. evaporítico": [0, 0, 0, 0, 1, 1, 0, 1]
+ambiente_formacion = {
+    "Caliza de Tacna": "Marino somero",
+    "Caliza de Puno": "Marino somero",
+    "Caliza con fósil": "Marino somero",
+    "Marga de Tacna": "Marino somero",
+    "Halita": "Ambiente evaporítico",
+    "Yeso": "Ambiente evaporítico",
+    "Coquina": "Playa/alto-energía",
+    "Baritina": "Ambiente hidrotermal"
 }
 
-# Selección de muestras
-seleccion = st.multiselect("Selecciona las muestras que deseas comparar:", muestras, default=muestras)
+# Mapear categorías a números
+def mapear_clasificacion(diccionario):
+    categorias = list(sorted(set(diccionario.values())))
+    if "N/A" in categorias:
+        categorias.remove("N/A")
+        categorias.append("N/A")
+    mapa = {cat: i for i, cat in enumerate(categorias)}
+    return mapa, categorias
 
-# Filtrar índices seleccionados
-indices = [muestras.index(m) for m in seleccion]
+# Función de graficación mejorada
+def graficar_categorizacion(titulo, datos, muestras_filtradas):
+    mapa, categorias = mapear_clasificacion(datos)
+    x = []
+    y = []
+    etiquetas = []
+    colores = []
+    
+    for i, muestra in enumerate(muestras_filtradas):
+        categoria = datos.get(muestra, "N/A")
+        if categoria != "N/A":
+            x.append(i)
+            y.append(mapa[categoria])
+            etiquetas.append(categoria)
+            colores.append(i)
 
-# Plot 1: Composición
-st.subheader("1. Composición Mineralógica")
-fig1, ax1 = plt.subplots()
-bar_width = 0.35
-x = range(len(seleccion))
-ax1.barh(x, [composicion["Carbonatos"][i] for i in indices], bar_width, label='Carbonatos')
-ax1.barh([i + bar_width for i in x], [composicion["Evaporitas"][i] for i in indices], bar_width, label='Evaporitas')
-ax1.set_yticks([i + bar_width / 2 for i in x])
-ax1.set_yticklabels(seleccion)
-ax1.set_xlabel('%')
-ax1.legend()
-st.pyplot(fig1)
+    fig, ax = plt.subplots(figsize=(max(6, len(muestras_filtradas)*0.9), 4))
+    scatter = ax.scatter(x, y, c=colores, cmap='tab10', s=120)
 
-# Plot 2: Clasificación textural (Dunham, 1962)
-st.subheader("2. Clasificación Textural (Dunham, 1962)")
-fig2, ax2 = plt.subplots()
-texturas = list(textura_dunham.keys())
-for i, textura in enumerate(texturas):
-    valores = [textura_dunham[textura][j] for j in indices]
-    ax2.barh(range(len(seleccion)), valores, left=[x + i for x in [0]*len(seleccion)], label=textura)
-ax2.set_yticks(range(len(seleccion)))
-ax2.set_yticklabels(seleccion)
-ax2.set_xlabel("Presencia (1 = Sí)")
-ax2.legend()
-st.pyplot(fig2)
+    # Etiquetas sobre cada punto
+    for xi, yi, etiqueta in zip(x, y, etiquetas):
+        ax.text(xi, yi + 0.1, etiqueta, ha='center', va='bottom', fontsize=9)
 
-# Plot 3: Ambientes sedimentarios
-st.subheader("3. Ambiente Sedimentario")
-fig3, ax3 = plt.subplots()
-ambs = list(ambientes.keys())
-bar_width = 0.35
-x = range(len(seleccion))
-ax3.bar(x, [ambientes["Amb. marino somero"][i] for i in indices], bar_width, label='Marino somero')
-ax3.bar([i + bar_width for i in x], [ambientes["Amb. evaporítico"][i] for i in indices], bar_width, label='Evaporítico')
-ax3.set_xticks([i + bar_width / 2 for i in x])
-ax3.set_xticklabels(seleccion, rotation=30, ha='right')
-ax3.set_ylabel("Presencia (1 = Sí)")
-ax3.legend()
-st.pyplot(fig3)
+    ax.set_xticks(range(len(muestras_filtradas)))
+    ax.set_xticklabels(muestras_filtradas, rotation=30, ha='right')
+    ax.set_yticks(list(mapa.values()))
+    ax.set_yticklabels(categorias)
+    ax.set_title(titulo)
+    ax.set_xlabel("Muestras")
+    ax.set_ylabel("Clasificación")
+    ax.grid(axis='y', linestyle='--', alpha=0.5)
+
+    st.pyplot(fig)
+
+# Interfaz
+st.title("Comparación de Rocas Carbonatadas y Evaporíticas")
+
+muestras_seleccionadas = st.multiselect("Selecciona las muestras a comparar:", muestras, default=muestras)
+
+if muestras_seleccionadas:
+    st.subheader("Clasificación según Dunham (1962)")
+    graficar_categorizacion("Clasificación Dunham", clasificacion_dunham, muestras_seleccionadas)
+
+    st.subheader("Clasificación según Folk (1974)")
+    graficar_categorizacion("Clasificación Folk", clasificacion_folk, muestras_seleccionadas)
+
+    st.subheader("Ambiente de Formación")
+    graficar_categorizacion("Ambiente de Formación", ambiente_formacion, muestras_seleccionadas)
+else:
+    st.warning("Por favor selecciona al menos una muestra para comparar.")
 
