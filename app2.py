@@ -1,47 +1,47 @@
 import streamlit as st
 import matplotlib.pyplot as plt
 
-# Diccionario con los datos de las muestras
+# Datos de las muestras
 muestras = {
     "Caliza de Tacna": {
-        "dunham": "Mudstone",
-        "folk": "Micrite",
+        "textura_dunham": "Mudstone",
+        "clasificacion_folk": "Micrita",
         "ambiente": "Marino somero"
     },
     "Caliza de Puno": {
-        "dunham": "Wackestone",
-        "folk": "Biomicrite",
-        "ambiente": "Marino somero"
+        "textura_dunham": "Wackestone",
+        "clasificacion_folk": "Biomicrita",
+        "ambiente": "Plataforma carbonatada"
     },
     "Caliza de Puno con fósil": {
-        "dunham": "Packstone",
-        "folk": "Fossiliferous micrite",
-        "ambiente": "Marino somero"
+        "textura_dunham": "Packstone",
+        "clasificacion_folk": "Biomicrita",
+        "ambiente": "Plataforma interna"
     },
     "Marga de Tacna": {
-        "dunham": "Mudstone",
-        "folk": "Marl",
-        "ambiente": "Lagunar"
+        "textura_dunham": "Mudstone",
+        "clasificacion_folk": "Micrita",
+        "ambiente": "Laguna"
     },
     "Halita": {
-        "dunham": "No aplica",
-        "folk": "Evaporita",
-        "ambiente": "Ambiente árido"
+        "textura_dunham": "Cristalina",
+        "clasificacion_folk": "No aplica",
+        "ambiente": "Evaporítico"
     },
     "Yeso": {
-        "dunham": "No aplica",
-        "folk": "Evaporita",
-        "ambiente": "Ambiente árido"
+        "textura_dunham": "Cristalina",
+        "clasificacion_folk": "No aplica",
+        "ambiente": "Evaporítico"
     },
     "Coquina": {
-        "dunham": "Grainstone",
-        "folk": "Biomicrite",
-        "ambiente": "Playa o mar somero"
+        "textura_dunham": "Grainstone",
+        "clasificacion_folk": "Biosparita",
+        "ambiente": "Alta energía costera"
     },
     "Baritina": {
-        "dunham": "No aplica",
-        "folk": "Sulfato",
-        "ambiente": "Hidrotermal"
+        "textura_dunham": "Cristalina",
+        "clasificacion_folk": "No aplica",
+        "ambiente": "Hidrotermal o evaporítico"
     }
 }
 
@@ -49,43 +49,58 @@ st.title("Comparador de Rocas Carbonatadas y Evaporíticas")
 
 seleccionadas = st.multiselect("Selecciona las muestras a comparar:", list(muestras.keys()))
 
-if len(seleccionadas) >= 2:
-    # Recuento para gráficos
-    dunham_count = {}
-    folk_count = {}
-    ambiente_count = {}
+# Colores por categoría (fijos para mantener consistencia)
+colores_textura = {
+    "Mudstone": "skyblue",
+    "Wackestone": "orange",
+    "Packstone": "green",
+    "Grainstone": "purple",
+    "Cristalina": "red"
+}
 
-    for nombre in seleccionadas:
-        data = muestras[nombre]
+colores_folk = {
+    "Micrita": "blue",
+    "Biomicrita": "orange",
+    "Biosparita": "green",
+    "No aplica": "gray"
+}
 
-        dunham = data["dunham"]
-        dunham_count[dunham] = dunham_count.get(dunham, 0) + 1
+colores_ambiente = {
+    "Marino somero": "navy",
+    "Plataforma carbonatada": "cyan",
+    "Plataforma interna": "teal",
+    "Laguna": "brown",
+    "Evaporítico": "pink",
+    "Alta energía costera": "gold",
+    "Hidrotermal o evaporítico": "darkred"
+}
 
-        folk = data["folk"]
-        folk_count[folk] = folk_count.get(folk, 0) + 1
+def graficar_clasificacion(titulo, atributo, colores_dict):
+    fig, ax = plt.subplots()
+    categorias = list(colores_dict.keys())
+    valores = {cat: [] for cat in categorias}
+    muestras_x = seleccionadas
 
-        ambiente = data["ambiente"]
-        ambiente_count[ambiente] = ambiente_count.get(ambiente, 0) + 1
+    for muestra in seleccionadas:
+        cat = muestras[muestra][atributo]
+        for c in categorias:
+            valores[c].append(1 if c == cat else 0)
 
-    # Función para gráfico de barras
-    def plot_bar_chart(data_dict, title, xlabel):
-        fig, ax = plt.subplots()
-        ax.bar(data_dict.keys(), data_dict.values(), color='skyblue')
-        ax.set_title(title)
-        ax.set_xlabel(xlabel)
-        ax.set_ylabel("Cantidad")
-        plt.xticks(rotation=30, ha='right')
-        st.pyplot(fig)
+    for cat in categorias:
+        ax.bar(muestras_x, valores[cat], label=cat, color=colores_dict[cat], bottom=[sum(valores[c][i] for c in list(valores.keys())[:list(valores.keys()).index(cat)]) for i in range(len(muestras_x))])
 
-    st.subheader("Clasificación textural según Dunham (1962)")
-    plot_bar_chart(dunham_count, "Clasificación Dunham", "Tipo de textura")
+    ax.set_ylabel("Clasificación")
+    ax.set_title(titulo)
+    ax.set_xticks(range(len(muestras_x)))
+    ax.set_xticklabels(muestras_x, rotation=45, ha="right")
+    ax.legend(title="Categorías")
+    st.pyplot(fig)
 
-    st.subheader("Clasificación de rocas calcáreas según Folk (1974)")
-    plot_bar_chart(folk_count, "Clasificación Folk", "Tipo Folk")
-
-    st.subheader("Ambiente de depósito")
-    plot_bar_chart(ambiente_count, "Ambientes sedimentarios", "Ambiente")
-
+if seleccionadas:
+    graficar_clasificacion("Clasificación Textural (Dunham, 1962)", "textura_dunham", colores_textura)
+    graficar_clasificacion("Clasificación de Calizas (Folk, 1974)", "clasificacion_folk", colores_folk)
+    graficar_clasificacion("Ambiente Sedimentario", "ambiente", colores_ambiente)
 else:
-    st.info("Selecciona al menos dos muestras para comparar.")
+    st.info("Selecciona al menos una muestra para visualizar los gráficos.")
+
 
