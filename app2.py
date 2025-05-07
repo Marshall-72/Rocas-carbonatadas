@@ -22,8 +22,8 @@ muestras = [
 # Clasificación de Dunham
 clasificacion_dunham = {
     "Caliza de Tacna": "Mudstone",
-    "Caliza de Puno": "Wackestone",
-    "Caliza Puno con fósil": "Packstone",
+    "Caliza de Puno": "Mudstone",
+    "Caliza Puno con fósil": "Wackestone",
     "Marga de Tacna": "Mudstone",
     "Halita": "N/A",
     "Yeso": "N/A",
