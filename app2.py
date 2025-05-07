@@ -3,61 +3,84 @@ import scipy.stats as stats
 import matplotlib.pyplot as plt
 import streamlit as st
 
-# Datos de ejemplo (puedes modificarlos según tus muestras reales)
+# Lista de muestras
 muestras = [
     "Caliza de Tacna",
     "Caliza de Puno",
-    "Caliza con fósil",
+    "Caliza Puno con fósil",
     "Marga de Tacna",
     "Halita",
     "Yeso",
     "Coquina",
-    "Baritina"
+    "Baritina",
+    "Lutita calcárea",
+    "Sal gema",
+    "Travertino",
+    "Caliza bioclástica de Tacna"
 ]
 
+# Clasificación de Dunham
 clasificacion_dunham = {
     "Caliza de Tacna": "Mudstone",
     "Caliza de Puno": "Wackestone",
-    "Caliza con fósil": "Packstone",
+    "Caliza Puno con fósil": "Packstone",
     "Marga de Tacna": "Mudstone",
     "Halita": "N/A",
     "Yeso": "N/A",
     "Coquina": "Grainstone",
-    "Baritina": "N/A"
+    "Baritina": "N/A",
+    "Lutita calcárea": "Mudstone",
+    "Sal gema": "N/A",
+    "Travertino": "Boundstone",
+    "Caliza bioclástica de Tacna": "Packstone"
 }
 
+# Clasificación de Folk
 clasificacion_folk = {
     "Caliza de Tacna": "Micrita",
     "Caliza de Puno": "Biomicrita",
-    "Caliza con fósil": "Biopelsparita",
+    "Caliza Puno con fósil": "Biopelsparita",
     "Marga de Tacna": "Micrita",
     "Halita": "N/A",
     "Yeso": "N/A",
     "Coquina": "Biosparita",
-    "Baritina": "N/A"
+    "Baritina": "N/A",
+    "Lutita calcárea": "Pelmicrita",
+    "Sal gema": "N/A",
+    "Travertino": "Sparita",
+    "Caliza bioclástica de Tacna": "Biosparita"
 }
 
+# Ambiente de formación
 ambiente_formacion = {
     "Caliza de Tacna": "Marino somero",
     "Caliza de Puno": "Marino somero",
-    "Caliza con fósil": "Marino somero",
+    "Caliza Puno con fósil": "Marino somero",
     "Marga de Tacna": "Marino somero",
     "Halita": "Ambiente evaporítico",
     "Yeso": "Ambiente evaporítico",
     "Coquina": "Playa/alto-energía",
-    "Baritina": "Ambiente hidrotermal"
+    "Baritina": "Ambiente hidrotermal",
+    "Lutita calcárea": "Marino profundo",
+    "Sal gema": "Ambiente evaporítico",
+    "Travertino": "Continental (manantial)",
+    "Caliza bioclástica de Tacna": "Marino somero"
 }
 
-# Energía de ambiente (con valores numéricos entre 1-10)
+# Energía del ambiente (escala subjetiva 1-10)
 energia_ambiente = {
     "Caliza de Tacna": 7,
     "Caliza de Puno": 6,
-    "Caliza con fósil": 5,
+    "Caliza Puno con fósil": 5,
     "Marga de Tacna": 6,
     "Halita": 9,
     "Yeso": 9,
     "Coquina": 4,
-    "Baritina": 8
+    "Baritina": 8,
+    "Lutita calcárea": 3,
+    "Sal gema": 9,
+    "Travertino": 6,
+    "Caliza bioclástica de Tacna": 5
 }
 
 # Función para obtener los valores únicos y mapear a números para eje Y
